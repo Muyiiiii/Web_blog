@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+{% endblock %}
+
+{#管理员按钮#}
+{% block header_left %}
+    {% if status == True %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin' %}" target="_blank">Super User</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block log_reg %}
+    {% if state == False %}
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'login' %}" style="color:white;">Login</a>
+        </button>
+
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-left: 5px;">
+            <a href="{% url 'register' %}" style="color:white;">Register</a>
+        </button>
+    {% else %}
+        <h6 style="margin-right: 30px">欢迎用户：{{ name }}</h6>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'logout' %}" style="color:white;">退出账号</a>
+        </button>
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="page-wrapper">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4>Who we are</h4>
+                    <p>Markedia is a personal blog for handcrafted, cameramade photography content, fashion styles from
+                        independent creatives around the world.</p>
+                </div>
+
+                <div class="col-lg-6">
+                    <h4>How we help?</h4>
+                    <p>If you’d like to write for us, <a href="#">advertise with us</a> or just say hello, fill out the
+                        form
+                        below and we’ll get back to you as soon as possible.</p>
+                </div>
+            </div><!-- end row -->
+
+            <hr class="invis">
+
+            <div id="target_contact" class="row">
+                <div class="col-lg-12">
+                    <form class="form-wrapper">
+                        <h4>Contact form</h4>
+                        <input type="text" class="form-control" placeholder="Your name">
+                        <input type="text" class="form-control" placeholder="Email address">
+                        <input type="text" class="form-control" placeholder="Phone">
+                        <input type="text" class="form-control" placeholder="Subject">
+                        <textarea class="form-control" placeholder="Your message"></textarea>
+                        <button type="submit" class="btn btn-primary">Send <i class="fa fa-envelope-open-o"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div><!-- end page-wrapper -->
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/submit.js' %}"></script>
+{% endblock %}

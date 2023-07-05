@@ -1,0 +1,65 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    {% if info != None %}
+        <script>
+            alert('{{ info }}')
+        </script>
+    {% endif %}
+
+    <meta charset="UTF-8">
+    <title>Responsive Login Form</title>
+    <link href="{% static 'plugins/log_reg/css/css.css' %}" rel="stylesheet">
+
+
+    <link href="{% static 'plugins/log_reg/css/font-awesome.min.css' %}" rel="stylesheet"
+          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'plugins/log_reg/css/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/more_info.css' %}">
+
+</head>
+<body>
+    <!-- partial:index.partial.html -->
+    <div class="box-form">
+        <div class="left">
+            <div class="overlay">
+                <h1>Hello World.</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Curabitur et est sed felis aliquet sollicitudin</p>
+            </div>
+        </div>
+
+
+        <div class="right" style="width: 1000px">
+            <h5>More-Info</h5>
+
+            <form action="{% url 'more_info' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="inputs">
+                    <input type="text" name="email" placeholder="邮箱">
+                    <br>
+                    <input type="file" name="pic" accept="image/*" id="imageUpload" class="form-control"
+                           placeholder="Your Picture">
+                    <div class="container">
+                        <img id="previewImage" class="form-control hide user_profile" src="#" alt="预览图">
+                    </div>
+                </div>
+
+                <br><br>
+
+                <br>
+                <button type="submit" class="btn btn-primary">提交审核<i class="fa fa-envelope-open-o"></i>
+                </button>
+            </form>
+        </div>
+
+    </div>
+    <!-- partial -->
+
+    <script src="{% static 'js/more_info.js' %}"></script>
+
+</body>
+</html>

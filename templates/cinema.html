@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+<html lang="zh">
+
+{#管理员按钮#}
+{% block header_left %}
+    {% if status == True %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin' %}" target="_blank">Super User</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{#登录登出按钮的显示#}
+{% block log_reg %}
+    {% if state == False %}
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'login' %}" style="color:white;">Login</a>
+        </button>
+
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-left: 5px;">
+            <a href="{% url 'register' %}" style="color:white;">Register</a>
+        </button>
+    {% else %}
+        <h6 style="margin-right: 30px">欢迎用户：{{ name }}</h6>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'logout' %}" style="color:white;">退出账号</a>
+        </button>
+    {% endif %}
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <style type="text/css">
+        body {
+            background-color: rgb(249, 202, 39);
+            width: 100%;
+            height: 100%;
+        }
+
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #player {
+            height: 80%;
+            width: 55%;
+            position: absolute;
+            left: 5%;
+            top: 15%;
+            box-shadow: 5px 5px 10px 2px black;
+            -moz-box-shadow: 5px 5px 10px 2px black;
+            /* 老的 Firefox */
+            background-color: white;
+        }
+
+        #player > #video {
+            width: 100%;
+            height: 82.3%;
+            position: absolute;
+            top: 0;
+        }
+
+        #player > #name {
+            width: 100%;
+            height: 15%;
+            font-size: 30px;
+            position: absolute;
+            top: 83%;
+            overflow: auto;
+            left: 1%;
+        }
+
+        #player > #author {
+            width: 100%;
+            height: 3%;
+            font-size: 20px;
+            font-family: 隶书;
+            position: absolute;
+            bottom: 2%;
+            left: 2%;
+        }
+
+        #chat {
+            height: 80%;
+            width: 30%;
+            position: absolute;
+            left: 65%;
+            top: 15%;
+            box-shadow: 5px 5px 10px 2px black;
+            -moz-box-shadow: 5px 5px 10px 2px black;
+            /* 老的 Firefox */
+            background-color: white;
+        }
+
+        #chat > #message {
+            width: 100%;
+            height: 100%;
+            font-size: 30px;
+        {#font-family: 华文行楷;#} position: absolute;
+            top: 0%;
+            overflow: auto;
+            left: 1%;
+        }
+
+        .comment {
+            font-size: 16px;
+            width: 90%;
+        }
+    </style>
+
+{% endblock %}
+
+{% block main_content %}
+    <div id="player">
+        <video id="video" src="/media/{{ video.video_file }}" controls="controls" autoplay="autoplay"></video>
+        <div id="name">
+            <div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <textarea type="text" placeholder="请输入" id="txt"
+                                      style="height:85px;width: 100%;font-size: 14px"></textarea>
+                        </div>
+                        <div class="col">
+                            <input class="btn btn-primary" type="button" value="发送"
+                                   onclick="sendMessage(); clearTextarea();">
+
+                            <a href="{% url 'index' %}" class="btn btn-success">
+                                返回首页
+                                <input class="btn btn-success" type="button" type="button" value="关闭"
+                                       onclick="closeConn();" style="display: none">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div id="author"></div>
+    </div>
+
+    <div id="chat">
+        <div class="message" id="message">
+            <div class="alert alert-success" style="width: 90%">
+                【你好用户--{{ name }}】
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function clearTextarea() {
+            document.getElementById("txt").value = "";  // 清空textarea的值
+        }
+
+        //创建websocket连接，用户向客户端发送
+        socket = new WebSocket("ws://127.0.0.1:8000/room/{{ num }}/");
+
+        //连接刚连上时
+        socket.onopen = function (event) {
+            let tag = document.createElement("div");
+            tag.innerText = '[连接成功]';
+            document.getElementById("message").appendChild(tag);
+        }
+
+        socket.onclose = function (event) {
+            let tag = document.createElement("div");
+            tag.innerText = '[连接已关闭]';
+            document.getElementById("message").appendChild(tag);
+        }
+
+        //接收服务端的数据
+        socket.onmessage = function (event) {
+            let tag = document.createElement("div");
+            tag.classList.add("alert");
+            tag.classList.add("alert-success");
+            tag.classList.add("comment");
+
+            tag.innerText = `${event.data} `;
+            document.getElementById("message").appendChild(tag);
+        }
+
+        //客户端向服务端发送信息
+        function sendMessage() {
+            let tag = document.getElementById("txt");
+            let str1 = '用户 ';
+            let str2 = ' 说';
+            let text = str1 + {{ name }} +str2 + tag.value;
+            socket.send(text);
+        }
+
+        //关闭连接
+        function closeConn() {
+            socket.close();
+        }
+    </script>
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+{% endblock %}
+

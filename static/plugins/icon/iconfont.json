@@ -1,0 +1,23 @@
+{
+  "id": "4103627",
+  "name": "123",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1264",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "10211778",
+      "name": "点赞",
+      "font_class": "dianzan",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    }
+  ]
+}

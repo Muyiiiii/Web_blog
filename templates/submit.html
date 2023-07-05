@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+{% endblock %}
+
+{#管理员按钮#}
+{% block header_left %}
+    {% if status == True %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin' %}" target="_blank">Super User</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block log_reg %}
+    {% if state == False %}
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'login' %}" style="color:white;">Login</a>
+        </button>
+
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-left: 5px;">
+            <a href="{% url 'register' %}" style="color:white;">Register</a>
+        </button>
+    {% else %}
+        <h6 style="margin-right: 30px">欢迎用户：{{ name }}</h6>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'logout' %}" style="color:white;">退出账号</a>
+        </button>
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="jumbotron">
+        <div class="page-wrapper">
+
+            <div id="editor" class="row">
+                <div class="col-lg-12">
+                    <form class="form-wrapper" action="{% url 'submit' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h4>精彩分享</h4>
+                        <input type="text" name="title" class="form-control" placeholder="主题">
+
+                        <input type="file" name="pic" accept="image/*" id="imageUpload" class="form-control"
+                               placeholder="Your Picture">
+                        <img id="previewImage" class="form-control hide" src="#" alt="预览图">
+
+                        <input type="text" name="kind" class="form-control" placeholder="类别">
+                        <textarea name="content" class="form-control" placeholder="主要内容"></textarea>
+                        <button type="submit" class="btn btn-primary">提交审核<i class="fa fa-envelope-open-o"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div><!-- end page-wrapper -->
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/submit.js' %}"></script>
+{% endblock %}

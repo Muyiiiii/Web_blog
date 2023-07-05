@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+{% endblock %}
+
+{#管理员按钮#}
+{% block header_left %}
+    {% if status == True %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin' %}" target="_blank">Super User</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block log_reg %}
+    {% if state == False %}
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'login' %}" style="color:white;">Login</a>
+        </button>
+
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-left: 5px;">
+            <a href="{% url 'register' %}" style="color:white;">Register</a>
+        </button>
+    {% else %}
+        <h6 style="margin-right: 30px">欢迎用户：{{ name }}</h6>
+        <button class="btn btn-outline-success my-2 my-sm-0" type="button"
+                style="margin-right: 5px;">
+            <a href="{% url 'logout' %}" style="color:white;">退出账号</a>
+        </button>
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+    {% if info != None %}
+        <script>
+            alert('{{ info }}')
+        </script>
+    {% endif %}
+
+    <div class="jumbotron">
+        <div class="page-wrapper">
+            {% if moment_now %}
+                <div class="jumbotron">
+                    <div class="container">
+                        <h2 class="display-4">{{ moment_now.title }}</h2>
+                        <p class="lead">{{ moment_now.content }}</p>
+                        <hr class="my-4">
+                        <div class="row show-grid" style="margin-bottom: 50px;">
+                            <div class="col-md-6">
+
+                                <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <img src="/media/{{ moment_now.pic }}" class="d-block w-100" alt="...">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+                                <a class="btn btn-primary btn-lg" href="/dianzan/?moment_id={{ moment_now.id }}"
+                                   role="button">
+                                    <i class="iconfont icon-dianzan" id="dianzan"></i>
+                                </a>
+                                <a id="commentBtn" class="btn btn-primary" data-toggle="collapse"
+                                   href="#"
+                                   role="button" aria-expanded="false" aria-controls="collapseExample"
+                                   onclick="return false">
+                                    我要评论
+                                </a>
+                                <a class="btn btn-primary btn-lg" href="{% url 'index' %}"
+                                   role="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-back" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
+                                        </svg>
+                                </a>
+                                <form id="commentForm" action="/add/comment/"
+                                      method="get" class="hide">
+                                    {% csrf_token %}
+                                    <textarea style="margin-top: 20px;border-radius: 5px;width: 1100px;height: 200px;"
+                                              placeholder="快来发表你的感想吧" name="content"></textarea>
+                                    <input type="text" class="hide" value="{{ moment_now.id }}" name="moment_id">
+                                    <button type="submit">提 交</button>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+
+
+                                <div class="alert alert-success" role="alert">
+
+                                    <h4 class="alert-heading">最新评论</h4>
+                                    {% if lattest_comment == None %}
+                                        <p class="lead">
+                                            快来抢占先机，发布这个帖子的第一条评论吧！！！
+                                        </p>
+                                    {% else %}
+                                        {#这里的style是为了自动换行#}
+                                        <p class="lead" style="word-wrap: break-word; white-space: pre-wrap;">
+                                            {{ lattest_comment.content }}
+                                        </p>
+
+                                    {% endif %}
+                                </div>
+                                <div class="alert alert-primary" role="alert">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+
+        </div><!-- end page-wrapper -->
+
+        <div class="alert alert-info" role="alert">
+            <div class="bd-example">
+                <div class="row">
+                    <div class="col-4">
+                        <div id="list-example" class="list-group">
+                            {% for comment in comments %}
+                                <a class="list-group-item list-group-item-action"
+                                   href="#list-item-{{ comment.id }}">{{ comment.author_name }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        {% for comment in comments %}
+                            <div class="alert alert-warning" role="alert">
+                                <div class="row show-grid" style="margin-bottom: 50px;">
+                                    <div class="col-6 ">
+                                        <h4 id="list-item-{{ comment.id }}">{{ comment.author_name }}</h4>
+                                    </div>
+                                    <div class="col-6">
+                                        <h4 id="list-item-{{ comment.id }}">{{ comment.date }}</h4>
+                                    </div>
+                                </div>
+                                <p class="lead"
+                                   style="word-wrap: break-word; white-space: pre-wrap;">{{ comment.content }}
+                                </p>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        // 获取评论按钮和评论表单的引用
+        var commentBtn = document.getElementById('commentBtn');
+        var commentForm = document.getElementById('commentForm');
+
+        // 添加点击事件监听器
+        commentBtn.addEventListener('click', function () {
+            // 移除 hide 类
+            commentForm.classList.remove('hide');
+        });
+    </script>
+    {#    <script src="{% static 'js/submit.js' %}"></script>#}
+{% endblock %}
